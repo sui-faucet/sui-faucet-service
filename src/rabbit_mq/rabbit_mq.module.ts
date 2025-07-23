@@ -3,6 +3,6 @@ import { RabbitMqService } from './rabbit_mq.service';
 
 @Module({
   providers: [RabbitMqService],
-  exports: [RabbitMqService]
+  exports: [RabbitMqService],
 })
-export class RabbitMqModule { }
+export class RabbitMqModule {}
