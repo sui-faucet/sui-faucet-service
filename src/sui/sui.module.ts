@@ -10,4 +10,4 @@ import { SystemSettingModule } from '../system_setting/system_setting.module';
   controllers: [SuiController],
   providers: [SuiService],
 })
-export class SuiModule { }
+export class SuiModule {}

@@ -47,7 +47,7 @@ export class RateLimiterMiddleware implements NestMiddleware {
 
       const ipCount = Number(ipCountRaw);
       const walletCount = Number(walletCountRaw);
-      
+
       if (ipCount > limitPerIp || walletCount > limitPerWalletAddress) {
         return false;
       }

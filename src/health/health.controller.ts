@@ -5,19 +5,19 @@ import { MongoHealthIndicator } from './mongo.health';
 
 @Controller('health')
 export class HealthController {
-    constructor(
-        private health: HealthCheckService,
-        private mongoHealthIndicator: MongoHealthIndicator,
-        private redisHealthIndicator: RedisHealthIndicator,
-    ) { }
+  constructor(
+    private health: HealthCheckService,
+    private mongoHealthIndicator: MongoHealthIndicator,
+    private redisHealthIndicator: RedisHealthIndicator,
+  ) {}
 
-    @Get()
-    @Version('1')
-    @HealthCheck()
-    check() {
-        return this.health.check([
-            () => this.mongoHealthIndicator.pingCheck(),
-            () => this.redisHealthIndicator.pingCheck(),
-        ]);
-    }
+  @Get()
+  @Version('1')
+  @HealthCheck()
+  check() {
+    return this.health.check([
+      () => this.mongoHealthIndicator.pingCheck(),
+      () => this.redisHealthIndicator.pingCheck(),
+    ]);
+  }
 }
