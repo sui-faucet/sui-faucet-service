@@ -3,9 +3,9 @@ import { HydratedDocument } from 'mongoose';
 
 export type SystemSettingDocument = HydratedDocument<SystemSetting>;
 
-@Schema()
+@Schema({ collection: 'system_settings', timestamps: true })
 export class SystemSetting {
-    @Prop({ required: true,  })
+    @Prop({ required: true, })
     suiFaucetAmount: number;
 
     @Prop({ required: true })
@@ -19,6 +19,12 @@ export class SystemSetting {
 
     @Prop({ required: true })
     ttlPerWalletAddress: number;
+
+    @Prop({ required: true })
+    isFaucetEnabled: boolean;
+
+    @Prop({ required: true })
+    isRateLimitEnabled: boolean;
 }
 
 export const SystemSettingSchema = SchemaFactory.createForClass(SystemSetting);

@@ -23,5 +23,5 @@ export class FaucetDto {
     @IsString()
     @IsNotEmpty()
     @IsSuiAddress()
-    address: string;
+    walletAddress: string;
 }

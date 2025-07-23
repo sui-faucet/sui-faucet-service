@@ -9,6 +9,7 @@ import { SystemSetting, SystemSettingSchema } from './schema/system_setting.sche
   imports: [
     MongooseModule.forFeature([{ name: SystemSetting.name, schema: SystemSettingSchema }])
   ],
+  exports: [SystemSettingService],
   controllers: [SystemSettingController],
   providers: [SystemSettingService]
 })

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsInt } from 'class-validator';
+import { IsNotEmpty, IsInt, IsBoolean } from 'class-validator';
 
 export class CreateSystemSettingDto {
     @IsInt()
@@ -20,6 +20,14 @@ export class CreateSystemSettingDto {
     @IsInt()
     @IsNotEmpty()
     ttlPerWalletAddress: number;
+
+    @IsBoolean()
+    @IsNotEmpty()
+    isFaucetEnabled: boolean;
+
+    @IsBoolean()
+    @IsNotEmpty()
+    isRateLimitEnabled: boolean;
 }
 
 export class UpdateSystemSettingDto {
@@ -37,4 +45,10 @@ export class UpdateSystemSettingDto {
 
     @IsInt()
     ttlPerWalletAddress: number;
+
+    @IsBoolean()
+    isFaucetEnabled: boolean;
+
+    @IsBoolean()
+    isRateLimitEnabled: boolean;
 }
