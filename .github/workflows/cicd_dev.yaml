@@ -55,7 +55,7 @@ jobs:
           MONGODB_DATABASE_NAME: ${{ secrets.MONGODB_DATABASE_NAME }}       
           
           REDIS_HOST: ${{ secrets.REDIS_HOST }}
-          REDIS_PORT: ${{ vars.REDIS_PORT }}
+          REDIS_PORT: ${{ secrets.REDIS_PORT }}
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
           REDIS_USERNAME: ${{ secrets.REDIS_USERNAME }}
 
