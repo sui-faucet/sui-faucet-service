@@ -50,8 +50,7 @@ jobs:
         env:
           SSH_HOST: ${{ secrets.EC2_HOST }}
           SSH_USER: ${{ secrets.EC2_USER }}
-          
-                
+           
           MONGODB_CONNECTION_STRING: ${{ secrets.MONGODB_CONNECTION_STRING }}   
           MONGODB_DATABASE_NAME: ${{ secrets.MONGODB_DATABASE_NAME }}       
           
@@ -63,25 +62,29 @@ jobs:
           AMQP_URL: ${{ secrets.AMQP_URL }}
 
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
+
+          DOMAIN_URL: ${{ secrets.DOMAIN_URL }}
+
+          PORT: ${{ vars.PORT }}
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/private.key ${SSH_USER}@${SSH_HOST} "
             docker rm -f sui-faucet-service || true
             docker rmi lekhacthanhtung/sui-faucet-service:latest || true
             docker run -it -d \
             --name sui-faucet-service \
-            -e VIRTUAL_HOST=\"dev-avail-racetrack.weminal.xyz\" \
-            -e VIRTUAL_PORT=8081 \
-            -e LETSENCRYPT_HOST=\"dev-avail-racetrack.weminal.xyz\" \
-            -e LETSENCRYPT_EMAIL=\"weminal@gmail.com\" \
+            -e PORT='${PORT}' \
+            -e VIRTUAL_HOST='${DOMAIN_URL}' \
+            -e VIRTUAL_PORT='${PORT}' \
+            -e LETSENCRYPT_HOST='${DOMAIN_URL}' \
+            -e LETSENCRYPT_EMAIL=\"admin@gmail.com\" \
             -e NODE_ENV=\"dev\" \
             -e SECRET_KEY='${SECRET_KEY}' \
             -e MONGODB_CONNECTION_STRING='${MONGODB_CONNECTION_STRING}' \
             -e MONGODB_DATABASE_NAME='${MONGODB_DATABASE_NAME}' \
-            -e HTTP_PORT=\"8081\" \
             -e REDIS_HOST='${REDIS_HOST}' \
             -e REDIS_PORT='${REDIS_PORT}' \
             -e REDIS_PASSWORD='${REDIS_PASSWORD}' \            
             -e REDIS_USERNAME='${REDIS_USERNAME}' \
             -e AMQP_URL='${AMQP_URL}' \
-            lekhacthanhtung/sui-faucet-service
+            lekhacthanhtung/sui-faucet-service:latest
           "

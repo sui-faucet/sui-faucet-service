@@ -6,9 +6,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SuiModule } from './sui/sui.module';
 import { HealthModule } from './health/health.module';
-import { RateLimiterMiddleware } from './common/middleware/rate_limiter.middleware';
 import { SystemSettingModule } from './system_setting/system_setting.module';
 import { RedisModule } from './redis/redis.module';
+import { LoggerMiddleware } from './common/middleware/logger.middleware';
 
 @Module({
   imports: [
@@ -29,6 +29,6 @@ import { RedisModule } from './redis/redis.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(RateLimiterMiddleware).forRoutes('*');
+    consumer.apply(LoggerMiddleware).forRoutes('*');
   }
 }
