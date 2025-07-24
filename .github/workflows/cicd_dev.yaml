@@ -83,7 +83,7 @@ jobs:
             -e MONGODB_DATABASE_NAME='${MONGODB_DATABASE_NAME}' \
             -e REDIS_HOST='${REDIS_HOST}' \
             -e REDIS_PORT='${REDIS_PORT}' \
-            -e REDIS_PASSWORD='${REDIS_PASSWORD}' \            
+            -e REDIS_PASSWORD='${REDIS_PASSWORD}' \
             -e REDIS_USERNAME='${REDIS_USERNAME}' \
             -e AMQP_URL='${AMQP_URL}' \
             lekhacthanhtung/sui-faucet-service:latest
