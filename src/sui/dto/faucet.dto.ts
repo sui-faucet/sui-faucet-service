@@ -4,6 +4,7 @@ import {
   registerDecorator,
   ValidationArguments,
 } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 // Custom validator to check if the address is a valid Sui address
 function IsSuiAddress() {
@@ -25,6 +26,10 @@ function IsSuiAddress() {
 }
 
 export class FaucetDto {
+  @ApiProperty({
+    description: 'The wallet address to receive the faucet',
+    example: '0xd10d3a3472d074baa16e5e6dba32e4d373e4eb4b6224d66c7bcb4a34c5ec8e64',
+  })
   @IsString()
   @IsNotEmpty()
   @IsSuiAddress()
