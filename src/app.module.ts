@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
@@ -8,6 +8,7 @@ import { SuiModule } from './sui/sui.module';
 import { HealthModule } from './health/health.module';
 import { SystemSettingModule } from './system_setting/system_setting.module';
 import { RedisModule } from './redis/redis.module';
+import { LoggerMiddleware } from './common/middleware/logger.middleware';
 
 @Module({
   imports: [
@@ -26,4 +27,8 @@ import { RedisModule } from './redis/redis.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
