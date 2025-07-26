@@ -1,4 +1,10 @@
-import { Controller, Get, Version, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Version,
+  Post,
+  Body,
+} from '@nestjs/common';
 
 import { SuiService } from './sui.service';
 import { SystemSettingService } from '../system_setting/system_setting.service';
