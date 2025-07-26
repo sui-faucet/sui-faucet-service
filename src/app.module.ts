@@ -9,6 +9,8 @@ import { HealthModule } from './health/health.module';
 import { SystemSettingModule } from './system_setting/system_setting.module';
 import { RedisModule } from './redis/redis.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
     SuiModule,
     SystemSettingModule,
     RedisModule,
+    AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

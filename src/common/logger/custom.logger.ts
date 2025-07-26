@@ -5,7 +5,7 @@ import 'winston-daily-rotate-file';
 
 export class CustomLogger implements LoggerService {
   private readonly logger: Logger;
-  
+
   constructor() {
     this.logger = createLogger({
       level: 'debug',
@@ -41,7 +41,7 @@ export class CustomLogger implements LoggerService {
       level: 'info',
     });
   }
-  
+
   error(message: string, context: string) {
     this.logger.log('error', message, {
       context,
