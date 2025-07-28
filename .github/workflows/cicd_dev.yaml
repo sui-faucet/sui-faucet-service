@@ -50,6 +50,9 @@ jobs:
         env:
           SSH_HOST: ${{ secrets.EC2_HOST }}
           SSH_USER: ${{ secrets.EC2_USER }}
+
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
            
           MONGODB_CONNECTION_STRING: ${{ secrets.MONGODB_CONNECTION_STRING }}   
           MONGODB_DATABASE_NAME: ${{ secrets.MONGODB_DATABASE_NAME }}       
@@ -86,5 +89,7 @@ jobs:
             -e REDIS_PASSWORD='${REDIS_PASSWORD}' \
             -e REDIS_USERNAME='${REDIS_USERNAME}' \
             -e AMQP_URL='${AMQP_URL}' \
+            -e JWT_SECRET='${JWT_SECRET}' \
+            -e JWT_EXPIRES_IN='${JWT_EXPIRES_IN}' \
             lekhacthanhtung/sui-faucet-service:latest
           "

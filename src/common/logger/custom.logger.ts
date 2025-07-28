@@ -10,25 +10,58 @@ export class CustomLogger implements LoggerService {
     this.logger = createLogger({
       level: 'debug',
       format: format.combine(
-        format.colorize(),
         format.timestamp(),
-        format.simple(),
+        format.errors({ stack: true }),
+        format.json(),
       ),
       transports: [
+        // Console transport for development
         new transports.Console({
           format: format.combine(
             format.colorize(),
-            format.printf(({ level, message, timestamp, context }) => {
-              return `[${chalk.green('Nest')}] - ${timestamp} ${level} [${chalk.yellow(context)}] ${message}`;
+            format.printf(({ level, message, timestamp, context, stack }) => {
+              const contextStr = context ? `[${chalk.yellow(context)}]` : '';
+              const stackStr = stack ? `\n${chalk.red(stack)}` : '';
+              return `[${chalk.green('Nest')}] - ${timestamp} ${level} ${contextStr} ${message}${stackStr}`;
             }),
           ),
         }),
+
+        // Daily rotating file for all logs
         new transports.DailyRotateFile({
-          filename: 'logs/%DATE%.log',
+          filename: 'logs/application-%DATE%.log',
           datePattern: 'YYYY-MM-DD',
           zippedArchive: true,
           maxSize: '20m',
           maxFiles: '14d',
+          format: format.combine(format.timestamp(), format.json()),
+        }),
+
+        // Separate error log file
+        new transports.DailyRotateFile({
+          filename: 'logs/error-%DATE%.log',
+          datePattern: 'YYYY-MM-DD',
+          zippedArchive: true,
+          maxSize: '20m',
+          maxFiles: '30d',
+          level: 'error',
+          format: format.combine(format.timestamp(), format.json()),
+        }),
+
+        // Request/response logs
+        new transports.DailyRotateFile({
+          filename: 'logs/requests-%DATE%.log',
+          datePattern: 'YYYY-MM-DD',
+          zippedArchive: true,
+          maxSize: '20m',
+          maxFiles: '7d',
+          level: 'info',
+          format: format.combine(
+            format.timestamp(),
+            format.printf(({ timestamp, level, message, context }) => {
+              return `${timestamp} [${level.toUpperCase()}] [${context || 'Request'}] ${message}`;
+            }),
+          ),
         }),
       ],
     });
@@ -42,11 +75,12 @@ export class CustomLogger implements LoggerService {
     });
   }
 
-  error(message: string, context: string) {
+  error(message: string, context: string, trace?: string) {
     this.logger.log('error', message, {
       context,
       timestamp: new Date().toISOString(),
       level: 'error',
+      stack: trace,
     });
   }
 
