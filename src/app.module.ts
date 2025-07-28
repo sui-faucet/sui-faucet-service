@@ -11,6 +11,7 @@ import { RedisModule } from './redis/redis.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { UsersModule } from './users/users.module';
     RedisModule,
     AuthModule,
     UsersModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

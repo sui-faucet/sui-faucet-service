@@ -6,19 +6,13 @@ export type SystemSettingDocument = HydratedDocument<SystemSetting>;
 @Schema({ collection: 'system_settings', timestamps: true })
 export class SystemSetting {
   @Prop({ required: true })
-  suiFaucetAmount: number;
+  normalizedAmount: number;
 
   @Prop({ required: true })
   limitPerIp: number;
 
   @Prop({ required: true })
-  limitPerWalletAddress: number;
-
-  @Prop({ required: true })
   ttlPerIp: number;
-
-  @Prop({ required: true })
-  ttlPerWalletAddress: number;
 
   @Prop({ required: true })
   isFaucetEnabled: boolean;
