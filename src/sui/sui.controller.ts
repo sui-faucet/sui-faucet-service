@@ -16,9 +16,15 @@ export class SuiController {
 
   @Post('faucet')
   @Version('1')
-  @ApiOperation({ summary: 'Transfer SUI tokens' })
-  @ApiResponse({ status: 200, description: 'Transfer successful' })
-  @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiOperation({ summary: 'Transfer SUI tokens to target address' })
+  @ApiResponse({
+    status: 200,
+    description: 'Transfer successful',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request',
+  })
   @ApiResponse({ status: 429, description: 'Rate limit exceeded' })
   async faucet(@Body() body: FaucetDto, @Req() req: Request) {
     const systemSetting = await this.systemSettingService.findOne();
@@ -49,22 +55,26 @@ export class SuiController {
 
       // Save failed transaction information
       await this.suiService.saveFailedTransaction(
-        error,
-        req.ip || 'Unknown',
-        body.walletAddress,
-        req.headers['user-agent'] || 'Unknown',
-        systemSetting.normalizedAmount,
-        responseTime,
+        {
+          error,
+          ipAddress: req.ip || 'Unknown',
+          walletAddress: body.walletAddress,
+          userAgent: req.headers['user-agent'] || 'Unknown',
+          responseTime,
+        }
       );
 
-      // Re-throw the error to maintain the original error response
       throw error;
     }
   }
 
   @Get('address')
   @Version('1')
-  @ApiResponse({ status: 200, description: 'Address retrieved successfully' })
+  @ApiOperation({ summary: 'Get SUI address of source' })
+  @ApiResponse({
+    status: 200,
+    description: 'Address of source retrieved successfully',
+  })
   getAddress() {
     const address = this.suiService.getAddress();
     return address;
@@ -72,8 +82,11 @@ export class SuiController {
 
   @Get('balance')
   @Version('1')
-  @ApiOperation({ summary: 'Get SUI balance' })
-  @ApiResponse({ status: 200, description: 'Balance retrieved successfully' })
+  @ApiOperation({ summary: 'Get SUI balance of source address' })
+  @ApiResponse({
+    status: 200,
+    description: 'Balance of source address retrieved successfully',
+  })
   getBalance() {
     const balance = this.suiService.getSuiBalance();
     return balance;

@@ -1,8 +1,9 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { VersioningType, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { CustomLogger } from './common/logger/custom.logger';
+
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -26,7 +27,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Sui Faucet')
     .setDescription('Sui Faucet API')
-    .setVersion('1.0')
+    .setVersion('0.0.1')
     .addTag('sui')
     .addBearerAuth(
       {

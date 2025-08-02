@@ -13,21 +13,8 @@ export interface TopSource {
   failureCount: number;
 }
 
-export interface FailureReason {
-  _id: string;
-  count: number;
-  errorMessages: string[];
-}
-
 export interface GeographicDistribution {
   _id: string;
-  count: number;
-  successCount: number;
-  failureCount: number;
-}
-
-export interface HourlyDistribution {
-  _id: number;
   count: number;
   successCount: number;
   failureCount: number;

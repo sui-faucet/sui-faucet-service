@@ -1,4 +1,4 @@
-import { Controller, Get, Version } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { HealthCheckService, HealthCheck } from '@nestjs/terminus';
 import { RedisHealthIndicator } from './redis.health';
 import { MongoHealthIndicator } from './mongo.health';
@@ -12,7 +12,6 @@ export class HealthController {
   ) {}
 
   @Get()
-  @Version('1')
   @HealthCheck()
   check() {
     return this.health.check([
