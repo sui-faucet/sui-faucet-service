@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -9,9 +9,7 @@ import {
 import {
   TransactionStats,
   TopSource,
-  FailureReason,
   GeographicDistribution,
-  HourlyDistribution,
   SystemPerformance,
   TopCountry,
   TopCountries,
@@ -19,8 +17,6 @@ import {
 
 @Injectable()
 export class AnalyticsService {
-  private readonly logger = new Logger(AnalyticsService.name);
-
   constructor(
     @InjectModel(Transaction.name) private transactionModel: Model<Transaction>,
   ) {}
@@ -44,29 +40,7 @@ export class AnalyticsService {
       },
     ]);
 
-    this.logger.log(
-      `Retrieved transaction stats for last ${days} days`,
-      'Analytics',
-    );
     return stats;
-  }
-
-  async getRateLimitViolations(days: number = 7): Promise<Transaction[]> {
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
-
-    const violations = await this.transactionModel
-      .find({
-        createdAt: { $gte: startDate },
-      })
-      .select('walletAddress ipAddress createdAt')
-      .sort({ createdAt: -1 });
-
-    this.logger.log(
-      `Retrieved ${violations.length} transactions for last ${days} days`,
-      'Analytics',
-    );
-    return violations;
   }
 
   async getTopRequestSources(
@@ -115,41 +89,7 @@ export class AnalyticsService {
       },
     ]);
 
-    this.logger.log(
-      `Retrieved top ${limit} request sources for last ${days} days`,
-      'Analytics',
-    );
     return topSources;
-  }
-
-  async getFailureReasons(days: number = 7): Promise<FailureReason[]> {
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
-
-    const failureReasons = await this.transactionModel.aggregate([
-      {
-        $match: {
-          status: TransactionStatus.FAILED,
-          createdAt: { $gte: startDate },
-        },
-      },
-      {
-        $group: {
-          _id: '$errorMessage',
-          count: { $sum: 1 },
-          errorMessages: { $addToSet: '$errorMessage' },
-        },
-      },
-      {
-        $sort: { count: -1 },
-      },
-    ]);
-
-    this.logger.log(
-      `Retrieved failure reasons for last ${days} days`,
-      'Analytics',
-    );
-    return failureReasons;
   }
 
   async getTransactionHistory(
@@ -173,10 +113,6 @@ export class AnalyticsService {
       .limit(limit)
       .select('-__v');
 
-    this.logger.log(
-      `Retrieved transaction history with filter: ${JSON.stringify(filter)}`,
-      'Analytics',
-    );
     return history;
   }
 
@@ -214,10 +150,6 @@ export class AnalyticsService {
       },
     ]);
 
-    this.logger.log(
-      `Retrieved geographic distribution for last ${days} days`,
-      'Analytics',
-    );
     return geoDistribution;
   }
 
@@ -232,7 +164,6 @@ export class AnalyticsService {
     });
 
     if (totalTransactions === 0) {
-      this.logger.log('No transactions found with country data', 'Analytics');
       return null;
     }
 
@@ -287,11 +218,6 @@ export class AnalyticsService {
 
     const result = topCountry[0] as TopCountry | undefined;
 
-    this.logger.log(
-      `Retrieved top country for last ${days} days: ${result?.country || 'None'} with ${result?.count || 0} transactions`,
-      'Analytics',
-    );
-
     return result || null;
   }
 
@@ -310,7 +236,6 @@ export class AnalyticsService {
     });
 
     if (totalTransactions === 0) {
-      this.logger.log('No transactions found with country data', 'Analytics');
       return {
         countries: [],
         totalTransactions: 0,
@@ -370,11 +295,6 @@ export class AnalyticsService {
       },
     ]);
 
-    this.logger.log(
-      `Retrieved top ${limit} countries for last ${days} days`,
-      'Analytics',
-    );
-
     return {
       countries: topCountries as TopCountry[],
       totalTransactions,
@@ -383,44 +303,6 @@ export class AnalyticsService {
         endDate: endDate.toISOString(),
       },
     };
-  }
-
-  async getHourlyDistribution(days: number = 7): Promise<HourlyDistribution[]> {
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
-
-    const hourlyDistribution = await this.transactionModel.aggregate([
-      {
-        $match: {
-          createdAt: { $gte: startDate },
-        },
-      },
-      {
-        $group: {
-          _id: { $hour: '$createdAt' },
-          count: { $sum: 1 },
-          successCount: {
-            $sum: {
-              $cond: [{ $eq: ['$status', TransactionStatus.SUCCESS] }, 1, 0],
-            },
-          },
-          failureCount: {
-            $sum: {
-              $cond: [{ $eq: ['$status', TransactionStatus.FAILED] }, 1, 0],
-            },
-          },
-        },
-      },
-      {
-        $sort: { _id: 1 },
-      },
-    ]);
-
-    this.logger.log(
-      `Retrieved hourly distribution for last ${days} days`,
-      'Analytics',
-    );
-    return hourlyDistribution;
   }
 
   async getSystemPerformance(
@@ -445,12 +327,17 @@ export class AnalyticsService {
           totalRequests: { $sum: 1 },
         },
       },
+      {
+        $project: {
+          _id: 0,
+          avgResponseTime: 1,
+          maxResponseTime: 1,
+          minResponseTime: 1,
+          totalRequests: 1,
+        },
+      },
     ]);
 
-    this.logger.log(
-      `Retrieved system performance metrics for last ${days} days`,
-      'Analytics',
-    );
     return performance[0] || null;
   }
 
@@ -468,10 +355,6 @@ export class AnalyticsService {
       })
       .sort({ createdAt: -1 });
 
-    this.logger.log(
-      `Retrieved activity for wallet ${walletAddress} for last ${days} days`,
-      'Analytics',
-    );
     return activity;
   }
 }

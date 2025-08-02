@@ -12,6 +12,7 @@ import {
   ApiResponse,
   ApiQuery,
   ApiParam,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 
 import { AnalyticsService } from './analytics.service';
@@ -23,9 +24,7 @@ import { Transaction } from '../sui/schema/transaction.schema';
 import {
   TransactionStats,
   TopSource,
-  FailureReason,
   GeographicDistribution,
-  HourlyDistribution,
   SystemPerformance,
   TopCountry,
   TopCountries,
@@ -33,10 +32,11 @@ import {
 
 @ApiTags('analytics')
 @Controller('analytics')
-// @UseGuards(AuthGuard, RolesGuard)
-// @Roles(Role.ADMIN)
+@UseGuards(AuthGuard, RolesGuard)
+@Roles(Role.ADMIN)
+@ApiBearerAuth('JWT-auth')
 export class AnalyticsController {
-  constructor(private readonly analyticsService: AnalyticsService) {}
+  constructor(private readonly analyticsService: AnalyticsService) { }
 
   @Get('stats')
   @Version('1')
@@ -55,25 +55,6 @@ export class AnalyticsController {
     @Query('days') days?: number,
   ): Promise<TransactionStats[]> {
     return await this.analyticsService.getTransactionStats(days);
-  }
-
-  @Get('rate-limits')
-  @Version('1')
-  @ApiOperation({ summary: 'Get rate limit violations' })
-  @ApiQuery({
-    name: 'days',
-    required: false,
-    type: Number,
-    description: 'Number of days to analyze',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Rate limit violations retrieved successfully',
-  })
-  async getRateLimitViolations(
-    @Query('days') days?: number,
-  ): Promise<Transaction[]> {
-    return await this.analyticsService.getRateLimitViolations(days);
   }
 
   @Get('top-sources')
@@ -100,25 +81,6 @@ export class AnalyticsController {
     @Query('limit') limit?: number,
   ): Promise<TopSource[]> {
     return await this.analyticsService.getTopRequestSources(days, limit);
-  }
-
-  @Get('failure-reasons')
-  @Version('1')
-  @ApiOperation({ summary: 'Get failure reasons analysis' })
-  @ApiQuery({
-    name: 'days',
-    required: false,
-    type: Number,
-    description: 'Number of days to analyze',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Failure reasons retrieved successfully',
-  })
-  async getFailureReasons(
-    @Query('days') days?: number,
-  ): Promise<FailureReason[]> {
-    return await this.analyticsService.getFailureReasons(days);
   }
 
   @Get('history')
@@ -220,25 +182,6 @@ export class AnalyticsController {
     @Query('limit') limit?: number,
   ): Promise<TopCountries> {
     return await this.analyticsService.getTopCountries(days, limit);
-  }
-
-  @Get('hourly')
-  @Version('1')
-  @ApiOperation({ summary: 'Get hourly distribution of requests' })
-  @ApiQuery({
-    name: 'days',
-    required: false,
-    type: Number,
-    description: 'Number of days to analyze',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Hourly distribution retrieved successfully',
-  })
-  async getHourlyDistribution(
-    @Query('days') days?: number,
-  ): Promise<HourlyDistribution[]> {
-    return await this.analyticsService.getHourlyDistribution(days);
   }
 
   @Get('performance')
