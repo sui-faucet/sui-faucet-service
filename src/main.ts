@@ -10,6 +10,13 @@ async function bootstrap() {
     logger: new CustomLogger(),
   });
 
+  app.enableCors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    credentials: true,
+    maxAge: 86400,
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // strips properties that do not have decorators
